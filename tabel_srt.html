@@ -1,0 +1,1766 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Aplikasi Surat Tugas BMKG</title>
+   <link rel="icon" type="image/png" href="logo_bmkg.png">
+  <link rel="shortcut icon" type="image/x-icon" href="logo_bmkg.png">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    :root {
+      --primary: #1a4f72;
+      --primary-light: #2c6b9e;
+      --primary-dark: #0d3a5c;
+      --accent: #f2c94c;
+      --light: #f8f9fa;
+      --dark: #343a40;
+      --success: #28a745;
+      --warning: #ffc107;
+      --danger: #dc3545;
+      --gray-light: #e9ecef;
+      --gray: #ced4da;
+    }
+    
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: linear-gradient(135deg, #e6f0ff 0%, #c9e6ff 100%);
+      margin: 0;
+      padding: 20px;
+      min-height: 100vh;
+      color: #333;
+    }
+    
+    .container {
+      max-width: 2500px;
+      margin: 20px auto;
+      background: #fff;
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.18);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    
+    .container:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.22);
+    }
+    
+    .header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-light) 100%);
+      color: white;
+      padding: 30px;
+      text-align: center;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .header::before {
+      content: "";
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: radial-gradient(circle, rgba(255,255,255,0.15) 0%, transparent 70%);
+      transform: rotate(30deg);
+    }
+    
+    .header h1 {
+      font-size: 32px;
+      margin-bottom: 8px;
+      position: relative;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.3);
+    }
+    
+    .header p {
+      font-size: 17px;
+      opacity: 0.9;
+      position: relative;
+    }
+    
+    .header-icon {
+      position: absolute;
+      top: 25px;
+      right: 25px;
+      font-size: 38px;
+      opacity: 0.2;
+      transition: opacity 0.3s ease;
+    }
+    
+    .header:hover .header-icon {
+      opacity: 0.35;
+    }
+    
+    .app-container {
+      display: flex;
+      min-height: 600px;
+    }
+    
+    .form-section {
+      flex: 1;
+      padding: 30px;
+      background: #f9fbfd;
+      border-right: 1px solid #eaeaea;
+    }
+    
+    .preview-section {
+      flex: 1.3;
+      padding: 30px;
+      background: #fff;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .section-title {
+      font-size: 22px;
+      font-weight: 700;
+      margin-bottom: 25px;
+      color: var(--primary);
+      padding-bottom: 12px;
+      border-bottom: 3px solid var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .form-group {
+      margin-bottom: 25px;
+      position: relative;
+    }
+    
+    label {
+      display: block;
+      margin-bottom: 10px;
+      font-weight: 600;
+      color: var(--primary);
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    
+    label i {
+      font-size: 14px;
+      opacity: 0.8;
+    }
+    
+    select, input, textarea {
+      width: 100%;
+      padding: 14px 18px;
+      border: 1px solid var(--gray);
+      border-radius: 8px;
+      font-family: 'Segoe UI', sans-serif;
+      font-size: 16px;
+      transition: all 0.3s;
+      background: #fff;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+    }
+    
+    select:focus, input:focus, textarea:focus {
+      outline: none;
+      border-color: var(--primary-light);
+      box-shadow: 0 0 0 3px rgba(44, 107, 158, 0.2);
+      transform: translateY(-2px);
+    }
+    
+    textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+    
+    .btn-group {
+      display: flex;
+      gap: 18px;
+      margin-top: 35px;
+    }
+    
+     button {
+            flex: 1;
+            padding: 18px 24px;
+            border: none;
+            border-radius: 12px;
+            font-size: 17px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.12);
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(120deg, transparent, rgba(255,255,255,0.3), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s;
+            z-index: -1;
+        }
+
+        button:hover::before {
+            transform: translateX(100%);
+        }
+
+        button:active {
+            transform: scale(0.96);
+        }
+
+        button.generate { 
+            background: linear-gradient(135deg, var(--primary) 0%, #0d47a1 100%); 
+            color: #fff; 
+        }
+        
+        button.generate:hover { 
+            transform: translateY(-6px);
+            box-shadow: 0 12px 20px rgba(13, 71, 161, 0.25);
+        }
+        
+        button.print { 
+            background: linear-gradient(135deg, var(--warning) 0%, #ff8f00 100%); 
+            color: var(--dark); 
+        }
+        
+        button.print:hover { 
+            transform: translateY(-6px);
+            box-shadow: 0 12px 20px rgba(255, 143, 0, 0.25);
+        }
+
+        .icon {
+            font-size: 20px;
+            transition: transform 0.3s ease;
+        }
+
+        button:hover .icon {
+            transform: scale(1.2);
+        }
+
+        .pulse {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(26, 115, 232, 0.4);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(26, 115, 232, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(26, 115, 232, 0);
+            }
+        }
+
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.6);
+            transform: scale(0);
+            animation: ripple 0.6s linear;
+            pointer-events: none;
+        }
+
+        @keyframes ripple {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+    
+    .surat-container {
+      flex: 1;
+      padding: 30px;
+      border: 1px solid #e0e0e0;
+      border-radius: 10px;
+      background: #fdfdfd;
+      font-family: "Times New Roman", serif;
+      font-size: 15px;
+      line-height: 1.5;
+      overflow-y: auto;
+      box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+      transition: box-shadow 0.3s ease;
+    }
+    
+    .surat-container:hover {
+      box-shadow: inset 0 0 12px rgba(0,0,0,0.08);
+    }
+    
+    .surat-header {
+      text-align: center;
+      font-weight: bold;
+      margin-bottom: 20px;
+    }
+    
+    .surat-title {
+        text-align: center;
+        margin: 10px 0 0 0;
+        font-size: 16px;
+        font-weight: bold;
+        line-height: 1;
+        letter-spacing: normal;
+    }
+    
+    .surat-title p {
+        margin: 0px 0;
+        line-height: 1;
+        letter-spacing: normal;
+    }
+
+    .surat-content {
+      text-align: justify;
+    }
+    
+    .surat-footer {
+      margin-top: 30px;
+      text-align: center;
+    }
+    
+    .ttd-area {
+      margin-top: 80px;
+      text-align: center;
+    }
+    
+    .ttd-name {
+      font-weight: bold;
+      text-decoration: none;
+      margin-top: 100px;
+    }
+    
+    .pegawai-list {
+      margin: 10px 0;
+      padding-left: 0px;
+    }
+    
+    .add-pegawai {
+      background: var(--primary-light);
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      border-radius: 6px;
+      cursor: pointer;
+      margin-top: 10px;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.3s;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    
+    .add-pegawai:hover {
+      background: #1f5a87;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+    }
+    
+    .pegawai-item {
+      background: #f1f6fc;
+      padding: 15px;
+      border-radius: 8px;
+      margin-bottom: 15px;
+      position: relative;
+      border-left: 4px solid var(--primary-light);
+      box-shadow: 0 3px 6px rgba(0,0,0,0.06);
+      transition: transform 0.3s ease;
+    }
+    
+    .pegawai-item:hover {
+      transform: translateX(5px);
+    }
+    
+    .remove-pegawai {
+      position: absolute;
+      right: 15px;
+      top: 15px;
+      color: var(--danger);
+      cursor: pointer;
+      background: #fff;
+      width: 26px;
+      height: 26px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+      transition: all 0.3s;
+    }
+    
+    .remove-pegawai:hover {
+      transform: scale(1.1);
+      box-shadow: 0 3px 6px rgba(0,0,0,0.15);
+    }
+    
+    .manual-input {
+      display: none;
+      margin-top: 15px;
+      padding: 20px;
+      background: #f1f6fc;
+      border-radius: 8px;
+      border-left: 4px solid var(--accent);
+    }
+    
+    .manual-pangkat-input {
+      display: none;
+      margin-top: 10px;
+    }
+    
+    .tabel-pegawai {
+      border-collapse: collapse;
+      margin-bottom: 10px;
+      line-height: normal;
+    }
+    
+    .tabel-pegawai td {
+      padding: 2px 6px;
+      vertical-align: top;
+    }
+    
+    .tabel-pegawai .label {
+      width: 160px;
+    }
+    
+    .tabel-pegawai .titikdua {
+      width: 10px;
+      text-align: center;
+    }
+
+    .page-break {
+      page-break-before: always;
+      margin-top: 50px;
+      padding-top: 30px;
+      border-top: 1px dashed #ccc;
+    }
+
+    .lampiran-title {
+      text-align: center;
+      font-weight: bold;
+      margin-bottom: 20px;
+      text-decoration: underline;
+    }
+
+    /* Style for the new employee table in the preview */
+    .pegawai-tabel-lampiran {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+      margin-bottom: 20px;
+    }
+    
+    .pegawai-tabel-lampiran th,
+    .pegawai-tabel-lampiran td {
+      border: 1px solid #000;
+      padding: 8px;
+      vertical-align: top;
+      text-align: left;
+    }
+    
+    .pegawai-tabel-lampiran th {
+      background-color: #ffffff;
+      text-align: center;
+    }
+    
+    .pegawai-tabel-lampiran tr:nth-child(even) {
+      background-color: #ffffff;
+    }
+    
+    /* Navigation buttons */
+    .nav-buttons {
+      display: flex;
+      justify-content: space-between;
+      padding: 15px 25px;
+      background: var(--gray-light);
+      border-top: 1px solid var(--gray);
+    }
+    
+    .nav-btn {
+      padding: 12px 25px;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      margin-left: 10px;
+      margin-right: 10px;
+    }
+    
+    .nav-btn.back {
+      background: var(--gray);
+      color: var(--dark);
+    }
+    
+    .nav-btn.back:hover {
+      background: #ff5e00;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    }
+    
+    .nav-btn.next {
+      background: var(--primary);
+      color: white;
+    }
+    
+    .nav-btn.next:hover {
+      background: #444445;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+    }
+    
+    /* Animasi untuk elemen form */
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    .form-group, .btn-group {
+      animation: fadeIn 0.5s ease-out;
+    }
+    
+    .form-group:nth-child(1) { animation-delay: 0.1s; }
+    .form-group:nth-child(2) { animation-delay: 0.2s; }
+    .form-group:nth-child(3) { animation-delay: 0.3s; }
+    .form-group:nth-child(4) { animation-delay: 0.4s; }
+    .form-group:nth-child(5) { animation-delay: 0.5s; }
+    .btn-group { animation-delay: 0.6s; }
+    
+    @media (max-width: 900px) {
+      .app-container {
+        flex-direction: column;
+      }
+      
+      .form-section {
+        border-right: none;
+        border-bottom: 1px solid #eee;
+      }
+      
+      .nav-buttons {
+        flex-direction: column;
+        gap: 10px;
+      }
+      
+      .nav-btn {
+        width: 100%;
+        justify-content: center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <h1><i class="fas fa-file-signature"></i> Aplikasi Surat Tugas BMKG</h1>
+      <p>Badan Meteorologi, Klimatologi, dan Geofisika - Stasiun Klimatologi Jawa Tengah</p>
+      <div class="header-icon">
+        <i class="fas fa-stamp"></i>
+      </div>
+    </div>
+    
+    <div class="app-container">
+      <div class="form-section">
+        <div class="section-title"><i class="fas fa-edit"></i> Form Data Surat Tugas</div>
+        
+        <div class="form-group">
+          <label for="penandatangan"><i class="fas fa-signature"></i> Penandatangan Surat:</label>
+          <select id="penandatangan" onchange="toggleManualInput()">
+            <option value="goeroeh">Goeroeh Tjiptanto, S.Stat, M.T.I</option>
+            <option value="sukasno">Sukasno, S.TP, M.M.</option>
+            <option value="wahyu">Wahyu Prasetya Adi, S.Si, M.M, M.Kom</option>
+            <option value="septima">Septima Ernawati, S.Si, M.Si</option>
+            <option value="iis">Iis Widya Harmoko, M.Kom</option>
+            <option value="tris">Tris Adi Sukoco, S.Hut</option>
+            <option value="sulistyowati">Sulistyowati, S.P</option>
+            <option value="zauyik">Zauyik Nana Ruslana, S.T</option>
+            <option value="hesty">Hesty Panitiastuti, S.Kom</option>
+            <option value="edy">Edy Susanto, S.P</option>
+            <option value="nursamsiah">Nursamsiah, S.Si, M.Si</option>
+            <option value="eko">Eko Taufiq Suharmanto, S.T</option>
+            <option value="rudi">Rudi Setyo Prihatin, S.P</option>
+            <option value="taufan">Taufan Hermawan, S.T</option>
+            <option value="rosyidah">Rosyidah, S.Kom, M.Si</option>
+            <option value="umaroh">Umaroh, S.Si, M.Si</option>
+            <option value="ikhsan">Ikhsan Yuliono, S.Kom</option>
+            <option value="abdul">Abdul Latif, S.Kom</option>
+            <option value="sri">Sri Endah Ardhi Ningrum Abdullah, S.Si</option>
+            <option value="indri">Indri Budiarto, S.T</option>
+            <option value="rini">Rini Eksawati, S.Si</option>
+            <option value="budi">Budi Haryanto, S.E</option>
+            <option value="teguh">R. Teguh Prayitno, S.Kom</option>
+            <option value="joko">Joko Cahyono</option>
+            <option value="muryanti">Muryanti</option>
+            <option value="stefani">Stefani Putri, S.Kom</option>
+            <option value="sidiq">Sidiq Prasetyo, S.IP</option>
+            <option value="afandi">Afandi</option>
+            <option value="restu">Restu Tresnawati, S.Si, M.Si</option>
+            <option value="ema">Ema Tri Catur Wulandari, S.E</option>
+            <option value="intan">Nurul Intan Alfiyanti, S.E, M.M</option>
+            <option value="achmad">Achmad Sulistyo E.P</option>
+            <option value="tutik">Tutik Suptrihatin, S.E, M.Si</option>
+            <option value="noris">Noris Mestika, S.Si.</option>
+            <option value="fitri">Rr. Fitri Damaryanti, S.Kom, M.Kom</option>
+            <option value="hana">Hana Amalina, S.Tr</option>
+            <option value="sandy">Sandy Al Mughozali, S.Tr</option>
+            <option value="suryati">Rini Suryati</option>
+            <option value="aris">Aris Herizaldi, A.Md</option>
+            <option value="jumari">Jumari</option>
+            <option value="bagus">Bagus Reza Pahlevi, S.Tr.Inst</option>
+            <option value="lainnya">Lainnya</option>
+          </select>
+          <div id="manualInput" class="manual-input">
+            <div class="form-group">
+              <label for="manualNama"><i class="fas fa-user"></i> Nama:</label>
+              <input type="text" id="manualNama" placeholder="Nama lengkap penandatangan">
+            </div>
+            <div class="form-group">
+              <label for="manualNIP"><i class="fas fa-id-card"></i> NIP:</label>
+              <input type="text" id="manualNIP" placeholder="NIP penandatangan">
+            </div>
+            <div class="form-group">
+              <label for="manualPangkat"><i class="fas fa-award"></i> Pangkat/Golongan:</label>
+              <select id="manualPangkat" onchange="toggleManualPangkatInput('manual')">
+                <option value="">Pilih Pangkat/Golongan</option>
+                <optgroup label="Juru">
+                  <option value="Juru Muda / I a">Juru Muda / I a</option>
+                  <option value="Juru Muda Tk. I / I b">Juru Muda Tk. I / I b</option>
+                  <option value="Juru / I c">Juru / I c</option>
+                  <option value="Juru Tk. I / I d">Juru Tk. I / I d</option>
+                </optgroup>
+                <optgroup label="Pengatur">
+                  <option value="Pengatur Muda / II a">Pengatur Muda / II a</option>
+                  <option value="Pengatur Muda Tk. I / II b">Pengatur Muda Tk. I / II b</option>
+                  <option value="Pengatur / II c">Pengatur / II c</option>
+                  <option value="Pengatur Tk. I / II d">Pengatur Tk. I / II d</option>
+                </optgroup>
+                <optgroup label="Penata">
+                  <option value="Penata Muda / III a">Penata Muda / III a</option>
+                  <option value="Penata Muda Tk. I / III b">Penata Muda Tk. I / III b</option>
+                  <option value="Penata / III c">Penata / III c</option>
+                  <option value="Penata Tk. I / III d">Penata Tk. I / III d</option>
+                </optgroup>
+                <optgroup label="Pembina">
+                  <option value="Pembina / IV a">Pembina / IV a</option>
+                  <option value="Pembina Tk. I / IV b">Pembina Tk. I / IV b</option>
+                  <option value="Pembina Utama Muda / IV c">Pembina Utama Muda / IV c</option>
+                  <option value="Pembina Utama Madya / IV d">Pembina Utama Madya / IV d</option>
+                  <option value="Pembina Utama / IV e">Pembina Utama / IV e</option>
+                </optgroup>
+                <option value="Lainnya">Lainnya</option>
+              </select>
+              <input type="text" id="manualPangkatLainnya" class="manual-pangkat-input" placeholder="Ketik Pangkat/Golongan">
+            </div>
+            <div class="form-group">
+              <label for="manualJabatan"><i class="fas fa-briefcase"></i> Jabatan:</label>
+              <input type="text" id="manualJabatan" placeholder="Jabatan penandatangan">
+            </div>
+            <div class="form-group">
+              <label for="manualttd"><i class="fas fa-signature"></i> Tanda Tangan Atas Nama:</label>
+              <input type="text" id="manualttd" placeholder="nama penandatangan">
+            </div>
+            <div class="form-group">
+              <label for="ttd_pengirim"><i class="fas fa-signature"></i> ttd elektronik</label>
+              <input type="text" id="ttd_pengirim" value="${ttd_pengirim}">
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label for="nomorSurat"><i class="fas fa-hashtag"></i> Nomor Surat:</label>
+          <input type="text" id="nomorSurat" placeholder="B/TU.01.00/001/KJTG/VIII/2025">
+        </div>
+        
+        <div class="form-group">
+          <label for="tanggalSurat"><i class="fas fa-calendar-alt"></i> Tanggal Surat:</label>
+          <input type="date" id="tanggalSurat">
+        </div>
+        
+        <div class="form-group">
+          <label><i class="fas fa-users"></i> Pegawai yang Ditugaskan:</label>
+          <div id="pegawaiList" class="pegawai-list">
+            <div class="pegawai-item">
+              <div class="form-group">
+                <label for="pegawaiSelect1">Pilih Pegawai:</label>
+                <select id="pegawaiSelect1" class="pegawai-select" onchange="togglePegawaiManualInput(this)">
+                  <option value="">Pilih Pegawai</option>
+                  <option value="goeroeh">Goeroeh Tjiptanto, S.Stat, M.T.I</option>
+                  <option value="sukasno">Sukasno, S.TP, M.M</option>
+                  <option value="wahyu">Wahyu Prasetya Adi, S.Si, M.M., M.Kom</option>
+                  <option value="septima">Septima Ernawati, S.Si, M.Si</option>
+                  <option value="iis">Iis Widya Harmoko, M.Kom</option>
+                  <option value="tris">Tris Adi Sukoco, S.Hut</option>
+                  <option value="sulistyowati">Sulistyowati, S.P</option>
+                  <option value="zauyik">Zauyik Nana Ruslana, S.T</option>
+                  <option value="hesty">Hesty Panitiastuti, S.Kom</option>
+                  <option value="edy">Edy Susanto, S.P</option>
+                  <option value="nursamsiah">Nursamsiah, S.Si, M.Si</option>
+                  <option value="eko">Eko Taufiq Suharmanto, S.T</option>
+                  <option value="rudi">Rudi Setyo Prihatin, S.P</option>
+                  <option value="taufan">Taufan Hermawan, S.T</option>
+                  <option value="rosyidah">Rosyidah, S.Kom, M.Si</option>
+                  <option value="umaroh">Umaroh, S.Si, M.Si</option>
+                  <option value="ikhsan">Ikhsan Yuliono, S.Kom</option>
+                  <option value="abdul">Abdul Latif, S.Kom</option>
+                  <option value="sri">Sri Endah Ardhi Ningrum Abdullah, S.Si</option>
+                  <option value="indri">Indri Budiarto, S.T</option>
+                  <option value="rini">Rini Eksawati, S.Si</option>
+                  <option value="budi">Budi Haryanto, S.E</option>
+                  <option value="teguh">R. Teguh Prayitno, S.Kom</option>
+                  <option value="joko">Joko Cahyono</option>
+                  <option value="muryanti">Muryanti</option>
+                  <option value="stefani">Stefani Putri, S.Kom</option>
+                  <option value="sidiq">Sidiq Prasetyo, S.IP</option>
+                  <option value="afandi">Afandi</option>
+                  <option value="restu">Restu Tresnawati, S.Si, M.Si</option>
+                  <option value="ema">Ema Tri Catur Wulandari, S.E</option>
+                  <option value="intan">Nurul Intan Alfiyanti, S.E, M.M</option>
+                  <option value="achmad">Achmad Sulistyo E.P</option>
+                  <option value="tutik">Tutik Suptrihatin, S.E, M.Si</option>
+                  <option value="noris">Noris Mestika, S.Si</option>
+                  <option value="fitri">Rr. Fitri Damaryanti, S.Kom, M.Kom</option>
+                  <option value="hana">Hana Amalina, S.Tr</option>
+                  <option value="sandy">Sandy Al Mughozali, S.Tr</option>
+                  <option value="suryati">Rini Suryati</option>
+                  <option value="aris">Aris Herizaldi, A.Md</option>
+                  <option value="jumari">Jumari</option>
+                  <option value="bagus">Bagus Reza Pahlevi, S.Tr.Inst</option>
+                  <option value="lainnya">Lainnya</option>
+                </select>
+              </div>
+              <div id="pegawaiManualInput1" class="manual-input">
+                <div class="form-group">
+                  <label>Nama Pegawai:</label>
+                  <input type="text" class="pegawai-nama" placeholder="Nama lengkap">
+                </div>
+                <div class="form-group">
+                  <label>NIP:</label>
+                  <input type="text" class="pegawai-nip" placeholder="Nomor Induk Pegawai">
+                </div>
+                <div class="form-group">
+                  <label>Pangkat/Golongan:</label>
+                  <select class="pegawai-pangkat" onchange="toggleManualPangkatInput('pegawai', this)">
+                    <option value="">Pilih Pangkat/Golongan</option>
+                    <optgroup label="Tidak ada pangkat">
+                      <option value="-">-</option>
+                    </optgroup>
+                    <optgroup label="Juru">
+                      <option value="Juru Muda / I a">Juru Muda / I a</option>
+                      <option value="Juru Muda Tk. I / I b">Juru Muda Tk. I / I b</option>
+                      <option value="Juru / I c">Juru / I c</option>
+                      <option value="Juru Tk. I / I d">Juru Tk. I / I d</option>
+                    </optgroup>
+                    <optgroup label="Pengatur">
+                      <option value="Pengatur Muda / II a">Pengatur Muda / II a</option>
+                      <option value="Pengatur Muda Tk. I / II b">Pengatur Muda Tk. I / II b</option>
+                      <option value="Pengatur / II c">Pengatur / II c</option>
+                      <option value="Pengatur Tk. I / II d">Pengatur Tk. I / II d</option>
+                    </optgroup>
+                    <optgroup label="Penata">
+                      <option value="Penata Muda / III a">Penata Muda / III a</option>
+                      <option value="Penata Muda Tk. I / III b">Penata Muda Tk. I / III b</option>
+                      <option value="Penata / III c">Penata / III c</option>
+                      <option value="Penata Tk. I / III d">Penata Tk. I / III d</option>
+                    </optgroup>
+                    <optgroup label="Pembina">
+                      <option value="Pembina / IV a">Pembina / IV a</option>
+                      <option value="Pembina Tk. I / IV b">Pembina Tk. I / IV b</option>
+                      <option value="Pembina Utama Muda / IV c">Pembina Utama Muda / IV c</option>
+                      <option value="Pembina Utama Madya / IV d">Pembina Utama Madya / IV d</option>
+                      <option value="Pembina Utama / IV e">Pembina Utama / IV e</option>
+                    </optgroup>
+                    <option value="Lainnya">Lainnya</option>
+                  </select>
+                  <input type="text" class="manual-pangkat-input" placeholder="Ketik Pangkat/Golongan">
+                </div>
+                <div class="form-group">
+                  <label>Jabatan:</label>
+                  <input type="text" class="pegawai-jabatan" placeholder="Jabatan pegawai">
+                </div>
+              </div>
+              <span class="remove-pegawai"><i class="fas fa-times"></i></span>
+            </div>
+          </div>
+          <button type="button" class="add-pegawai" id="tambahPegawai"><i class="fas fa-plus"></i> Tambah Pegawai</button>
+        </div>
+        
+        <div class="form-group">
+          <label for="tugas"><i class="fas fa-tasks"></i> Tugas:</label>
+          <textarea id="tugas" placeholder="Uraian tugas yang diberikan"></textarea>
+        </div>
+        
+        <div class="form-group">
+          <label for="lamaTugas"><i class="fas fa-clock"></i> Lama Tugas:</label>
+          <input type="text" id="lamaTugas" placeholder="Contoh: 1 (satu) hari">
+        </div>
+        
+        <div class="form-group">
+          <label for="tanggalBerangkat"><i class="fas fa-plane-departure"></i> Tanggal Berangkat:</label>
+          <input type="date" id="tanggalBerangkat">
+        </div>
+        
+        <div class="form-group">
+          <label for="lokasi"><i class="fas fa-map-marker-alt"></i> Lokasi Tugas:</label>
+          <input type="text" id="lokasi" placeholder="Tempat pelaksanaan tugas">
+        </div>
+        
+        <div class="form-group">
+          <label for="sumberDana"><i class="fas fa-money-bill-wave"></i> Sumber Dana:</label>
+          <input type="text" id="sumberDana" placeholder="Sumber pendanaan tugas">
+        </div>
+        
+        <div class="btn-group">
+          <button class="generate pulse" onclick="generateSurat()"><i class="fas fa-file-alt"></i> Buat Surat</button>
+          <button class="print" onclick="printSurat()"><i class="fas fa-print"></i> Cetak</button>
+        </div>
+      </div>
+      
+      <div class="preview-section">
+        <div class="section-title"><i class="fas fa-eye"></i> Preview Surat</div>
+        <div class="surat-container" id="suratPreview">
+          <!-- Preview will be generated by JavaScript -->
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation buttons -->
+    <div class="nav-buttons">
+     <button class="nav-btn back" onclick="window.location.href='index.html'">
+        <i class="fas fa-arrow-left"></i> Kembali
+      </button>
+      <button class="nav-btn next" onclick="window.location.href='surat.html'">
+        Ke Surat Tugas Untuk 1-2 Orang <i class="fas fa-arrow-right"></i>
+      </button>
+    </div>
+  </div>
+
+  <script>
+   // Data penandatangan untuk mengisi form otomatis
+    const penandatanganData = {
+      'goeroeh': {
+        nama: 'Goeroeh Tjiptanto, S.Stat, M.T.I',
+        nip: '197101221994031001',
+        pangkat: 'Pembina Tk. I / IV b',
+        jabatan: 'Kepala',
+        ttd: 'Goeroeh Tjiptanto',
+        ttd_pengirim : '${ttd_pengirim}'
+      },
+      'sukasno': {
+        nama: 'Sukasno, S.TP, M.M',
+        nip: '196703041990031001',
+        pangkat: 'Pembina Tk. I / IV b',
+        jabatan: 'PMG Madya',
+        ttd: 'Sukasno',
+        ttd_pengirim : '${ttd_pengirim}'
+      },
+      'wahyu': {
+        nama: 'Wahyu Prasetya Adi, S.Si, M.M, M.Kom',
+        nip: '197805142000121001',
+        pangkat: 'Pembina / IV a',
+        jabatan: 'Kepala Sub-bagian Tata Usaha',
+        ttd: 'Wahyu Prasetya Adi',
+        ttd_pengirim : '${ttd_pengirim}'
+      },
+      'septima': {
+        nama: 'Septima Ernawati, S.Si, M.Si',
+        nip: '197209051995032001',
+        pangkat: 'Pembina Tk. I / IV b',
+        jabatan: 'PMG Madya',
+        ttd: 'Septima Ernawati',
+        ttd_pengirim : '${ttd_pengirim}'
+      },
+      'iis': {
+        nama: 'Iis Widya Harmoko, M.Kom',
+        nip: '197801221998031001',
+        pangkat: 'Pembina Tk. I / IV b',
+        jabatan: 'PMG Madya',
+        ttd: 'Iis Widya Harmoko',
+        ttd_pengirim : '${ttd_pengirim}'
+      },
+      'tris': {
+        nama: 'Tris Adi Sukoco, S.Hut',
+        nip: '197211131995031002',
+        pangkat: 'Pembina Tk. I / IV b',
+        jabatan: 'PMG Madya',
+        ttd: 'Tris Adi Sukoco',
+        ttd_pengirim : '${ttd_pengirim}'
+      },
+      'sulistyowati': {
+        nama: 'Sulistyowati, S.P',
+        nip: '197001281992022001',
+        pangkat: 'Pembina Tk. I / IV b',
+        jabatan: 'PMG Madya',
+        ttd: 'Sulistyowati',
+        ttd_pengirim : '${ttd_pengirim}'
+      },
+      'zauyik': {
+        nama: 'Zauyik Nana Ruslana, S.T',
+        nip: '197706282000121002',
+        pangkat: 'Pembina Tk. I / IV b',
+        jabatan: 'PMG Madya',
+        ttd: 'Zauyik Nana Ruslana',
+        ttd_pengirim : '${ttd_pengirim}'
+      },
+      'hesty': {
+        nama: 'Hesty Panitiastuti, S.Kom',
+        nip: '196910041990032001',
+        pangkat: 'Pembina Tk. I / IV b',
+        jabatan: 'PMG Madya',
+        ttd: 'Hesty Panitiastuti',
+        ttd_pengirim : '${ttd_pengirim}'
+      },
+      'edy': {
+        nama: 'Edy Susanto, S.P',
+        nip: '197611141997031001',
+        pangkat: 'Pembina / IV a',
+        jabatan: 'PMG Madya',
+        ttd: 'Edy Susanto',
+        ttd_pengirim : '${ttd_pengirim}'
+      },
+      'nursamsiah': {
+        nama: 'Nursamsiah, S.Si, M.Si',
+        nip: '198210022006042005',
+        pangkat: 'Pembina / IV a',
+        jabatan: 'PMG Madya',
+        ttd: 'Nursamsiah',
+        ttd_pengirim : '${ttd_pengirim}'
+      },
+      'eko': {
+        nama: 'Eko Taufiq Suharmanto, S.T',
+        nip: '198609212008011004',
+        pangkat: 'Pembina / IV a',
+        jabatan: 'PMG Madya',
+        ttd: 'Eko Taufiq Suharmanto',
+        ttd_pengirim : '${ttd_pengirim}'
+      },
+      'rudi': {
+        nama: 'Rudi Setyo Prihatin, S.P',
+        nip: '197602231999031001',
+        pangkat: 'Pembina / IV a',
+        jabatan: 'PMG Madya',
+        ttd: 'Rudi Setyo Prihatin',
+        ttd_pengirim : '${ttd_pengirim}'
+      },
+      'taufan': {
+        nama: 'Taufan Hermawan, S.T',
+        nip: '197502222009111001',
+        pangkat: 'Pembina / IV a',
+        jabatan: 'PMG Madya',
+        ttd: 'Taufan Hermawan',
+        ttd_pengirim : '${ttd_pengirim}'
+      },
+      'rosyidah': {
+        nama: 'Rosyidah, S.Kom, M.Si',
+        nip: '198503082007012003',
+        pangkat: 'Pembina / IV a',
+        jabatan: 'PMG Madya',
+        ttd: 'Rosyidah',
+        ttd_pengirim : '${ttd_pengirim}'
+      },
+      'umaroh': {
+        nama: 'Umaroh, S.Si, M.Si',
+        nip: '198408112006042002',
+        pangkat: 'Pembina / IV a',
+        jabatan: 'PMG Madya',
+        ttd: 'Umaroh',
+        ttd_pengirim : '${ttd_pengirim}'
+      },
+      'ikhsan': {
+        nama: 'Ikhsan Yuliono, S.Kom',
+        nip: '198007302008011013',
+        pangkat: 'Pembina / IV a',
+        jabatan: 'PMG Madya',
+        ttd: 'Ikhsan Yuliono',
+        ttd_pengirim : '${ttd_pengirim}'
+      },
+      'abdul': {
+        nama: 'Abdul Latif, S.Kom',
+        nip: '197607222006041003',
+        pangkat: 'Pembina / IV a',
+        jabatan: 'PMG Madya',
+        ttd: 'Abdul Latif',
+        ttd_pengirim : '${ttd_pengirim}'
+      },
+      'sri': {
+        nama: 'Sri Endah Ardhi Ningrum Abdullah, S.Si',
+        nip: '197604192008012015',
+        pangkat: 'Pembina / IV a',
+        jabatan: 'PMG Madya',
+        ttd: 'Sri Endah Ardhi Ningrum Abdullah',
+        ttd_pengirim : '${ttd_pengirim}'
+      },
+      'indri': {
+        nama: 'Indri Budiarto, S.T',
+        nip: '198512282008011004',
+        pangkat: 'Pembina / IV a',
+        jabatan: 'PMG Muda',
+        ttd: 'Indri Budiarto',
+        ttd_pengirim : '${ttd_pengirim}'
+      },
+      'rini': {
+        nama: 'Rini Eksawati, S.Si',
+        nip: '198510052009112001',
+        pangkat: 'Pembina / IV a',
+        jabatan: 'PMG Muda',
+        ttd: 'Rini Eksawati',
+        ttd_pengirim : '${ttd_pengirim}'
+      },
+      'budi': {
+        nama: 'Budi Haryanto, S.E',
+        nip: '196904011997031001',
+        pangkat: 'Penata Tk. I / III d',
+        jabatan: 'Pengolah Data dan Informasi',
+        ttd: 'Budi Haryanto',
+        ttd_pengirim : '${ttd_pengirim}'
+      },
+      'teguh': {
+        nama: 'R. Teguh Prayitno, S.Kom',
+        nip: '198302262008121001',
+        pangkat: 'Penata Tk. I / III d',
+        jabatan: 'Koordinator Bidang Observasi',
+        ttd: 'R. Teguh Prayitno',
+        ttd_pengirim : '${ttd_pengirim}'
+      },
+      'joko': {
+        nama: 'Joko Cahyono',
+        nip: '196806231989031001',
+        pangkat: 'Penata Tk. I / III d',
+        jabatan: 'PMG Penyelia',
+        ttd: 'Joko Cahyono',
+        ttd_pengirim : '${ttd_pengirim}'
+      },
+      'muryanti': {
+        nama: 'Muryanti',
+        nip: '196907311994022001',
+        pangkat: 'Penata Tk. I / III d',
+        jabatan: 'PMG Penyelia',
+        ttd: 'Muryanti',
+        ttd_pengirim : '${ttd_pengirim}'
+      },
+      'stefani': {
+        nama: 'Stefani Putri, S.Kom',
+        nip: '198910102010122001',
+        pangkat: 'Penata Tk. I / III d',
+        jabatan: 'PMG Muda',
+        ttd: 'Stefani Putri',
+        ttd_pengirim : '${ttd_pengirim}'
+      },
+      'sidiq': {
+        nama: 'Sidiq Prasetyo, S.IP',
+        nip: '198107212008121002',
+        pangkat: 'Penata Tk. I / III d',
+        jabatan: 'Arsiparis Muda',
+        ttd: 'Sidiq Prasetyo',
+        ttd_pengirim : '${ttd_pengirim}'
+      },
+      'afandi': {
+        nama: 'Afandi',
+        nip: '198310012009111001',
+        pangkat: 'Penata Tk. I / III d',
+        jabatan: 'PMG Muda',
+        ttd: 'Afandi',
+        ttd_pengirim : '${ttd_pengirim}'
+      },
+      'restu': {
+        nama: 'Restu Tresnawati, S.Si, M.Si',
+        nip: '198112052006042002',
+        pangkat: 'Penata Tk. I / III d',
+        jabatan: 'PMG Muda',
+        ttd: 'Restu Tresnawati',
+        ttd_pengirim : '${ttd_pengirim}'
+      },
+      'ema': {
+        nama: 'Ema Tri Catur Wulandari, S.E',
+        nip: '198403262008122002',
+        pangkat: 'Penata Tk. I / III d',
+        jabatan: 'Analis Pengelolaan Keuangan APBN Muda',
+        ttd: 'Ema Tri Catur Wulandari',
+        ttd_pengirim : '${ttd_pengirim}'
+      },
+      'intan': {
+        nama: 'Nurul Intan Alfiyanti, S.E, M.M',
+        nip: '198607142008122001',
+        pangkat: 'Penata Tk. I / III d',
+        jabatan: 'Analis Pengelolaan Keuangan APBN Muda',
+        ttd: 'Nurul Intan Alfiyanti',
+        ttd_pengirim : '${ttd_pengirim}'
+      },
+      'achmad': {
+        nama: 'Achmad Sulistyo E.P',
+        nip: '196901241992021001',
+        pangkat: 'Penata Tk. I / III d',
+        jabatan: 'PMG Penyelia',
+        ttd: 'Achmad Sulistyo',
+        ttd_pengirim : '${ttd_pengirim}'
+      },
+      'tutik': {
+        nama: 'Tutik Suptrihatin, S.E, M.Si',
+        nip: '197409221998032002',
+        pangkat: 'Penata / III c',
+        jabatan: 'Analis Pengelolaan Keuangan APBN Muda',
+        ttd: 'Tutik Suptrihatin',
+        ttd_pengirim : '${ttd_pengirim}'
+      },
+      'noris': {
+        nama: 'Noris Mestika, S.Si',
+        nip: '199109152015022001',
+        pangkat: 'Penata / III c',
+        jabatan: 'PMG Muda',
+        ttd: 'Noris Mestika',
+        ttd_pengirim : '${ttd_pengirim}'
+      },
+      'fitri': {
+        nama: 'Rr. Fitri Damaryanti, S.Kom, M.Kom',
+        nip: '198003042009112001',
+        pangkat: 'Penata / III c',
+        jabatan: 'Arsiparis Muda',
+        ttd: 'Rr. Fitri Damaryanti',
+        ttd_pengirim : '${ttd_pengirim}'
+      },
+      'hana': {
+        nama: 'Hana Amalina, S.Tr',
+        nip: '199310132013122001',
+        pangkat: 'Penata / III c',
+        jabatan: 'PMG Muda / Bendahara Penerima',
+        ttd: 'Hana Amalina',
+        ttd_pengirim : '${ttd_pengirim}'
+      },
+      'sandy': {
+        nama: 'Sandy Al Mughozali, S.Tr',
+        nip: '199606252016011001',
+        pangkat: 'Penata Muda Tk. I / III b',
+        jabatan: 'PMG Pertama',
+        ttd: 'Sandy Al Mughozali',
+       ttd_pengirim : '${ttd_pengirim}'
+      },
+      'suryati': {
+        nama: 'Rini Suryati',
+        nip: '197003131993032001',
+        pangkat: 'Penata Muda Tk. I / III b',
+        jabatan: 'Penata Laksana Barang Terampil',
+        ttd: 'Rini Suryati',
+        ttd_pengirim : '${ttd_pengirim}'
+      },
+      'aris': {
+        nama: 'Aris Herizaldi, A.Md',
+        nip: '198708302012121003',
+        pangkat: 'Penata Muda Tk. I / III b',
+        jabatan: 'PMG Pelaksana Lanjutan',
+        ttd: 'Aris Herizaldi',
+        ttd_pengirim : '${ttd_pengirim}'
+      },
+      'jumari': {
+        nama: 'Jumari',
+        nip: '197602082006041009',
+        pangkat: 'Penata Muda / III a',
+        jabatan: 'Operator Layanan Operasional',
+        ttd: 'Jumari',
+        ttd_pengirim : '${ttd_pengirim}'
+      },
+      'bagus': {
+        nama: 'Bagus Reza Pahlevi, S.Tr.Inst',
+        nip: '199712022023021001',
+        pangkat: 'Penata Muda / III a',
+        jabatan: 'PMG Pertama',
+        ttd: 'Bagus Reza Pahlevi',
+        ttd_pengirim : '${ttd_pengirim}'
+      }
+    };
+
+    document.querySelectorAll('button').forEach(button => {
+            // Efek ripple saat tombol diklik
+            button.addEventListener('click', function(e) {
+                const ripple = document.createElement('span');
+                ripple.classList.add('ripple');
+                
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+                
+                ripple.style.width = ripple.style.height = `${size}px`;
+                ripple.style.left = `${x}px`;
+                ripple.style.top = `${y}px`;
+                
+                this.appendChild(ripple);
+                
+                setTimeout(() => {
+                    ripple.remove();
+                }, 600);
+            });
+            
+            // Efek hover untuk semua tombol
+            button.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-6px)';
+            });
+            
+            button.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+    
+    document.addEventListener('DOMContentLoaded', function() {
+  // Set default dates
+  const today = new Date();
+  document.getElementById('tanggalSurat').valueAsDate = today;
+  
+  const nextWeek = new Date();
+  nextWeek.setDate(today.getDate() + 7);
+  document.getElementById('tanggalBerangkat').valueAsDate = nextWeek;
+  
+  // Inisialisasi data penandatangan dengan data pertama (goeroeh)
+  const data = penandatanganData['goeroeh'];
+  if (data) {
+    document.getElementById('manualNama').value = data.nama;
+    document.getElementById('manualNIP').value = data.nip;
+    document.getElementById('manualPangkat').value = data.pangkat;
+    document.getElementById('manualJabatan').value = data.jabatan;
+    document.getElementById('manualttd').value = data.ttd;
+    document.getElementById('ttd_pengirim').value = data.ttd_pengirim || data.ttd;
+  }
+  
+  // Sembunyikan form manual (karena default bukan "lainnya")
+  document.getElementById('manualInput').style.display = 'none';
+  
+  // ... (kode lainnya tetap sama)
+      
+      // Add event listener for removing pegawai
+      document.getElementById('pegawaiList').addEventListener('click', function(e) {
+        if (e.target.closest('.remove-pegawai')) {
+          e.target.closest('.pegawai-item').remove();
+        }
+      });
+      
+      // Add event listener for adding pegawai
+      document.getElementById('tambahPegawai').addEventListener('click', function() {
+        const pegawaiList = document.getElementById('pegawaiList');
+        const newPegawai = document.createElement('div');
+        newPegawai.className = 'pegawai-item';
+        const pegawaiCount = pegawaiList.children.length + 1;
+        
+        newPegawai.innerHTML = `
+          <div class="form-group">
+            <label for="pegawaiSelect${pegawaiCount}">Pilih Pegawai:</label>
+            <select id="pegawaiSelect${pegawaiCount}" class="pegawai-select" onchange="togglePegawaiManualInput(this)">
+              <option value="">Pilih Pegawai</option>
+              <option value="goeroeh">Goeroeh Tjiptanto, S.Stat, M.T.I</option>
+              <option value="sukasno">Sukasno, S.TP, M.M</option>
+              <option value="wahyu">Wahyu Prasetya Adi, S.Si, M.M, M.Kom</option>
+              <option value="septima">Septima Ernawati, S.Si, M.Si</option>
+              <option value="iis">Iis Widya Harmoko, M.Kom</option>
+              <option value="tris">Tris Adi Sukoco, S.Hut</option>
+              <option value="sulistyowati">Sulistyowati, S.P</option>
+              <option value="zauyik">Zauyik Nana Ruslana, S.T</option>
+              <option value="hesty">Hesty Panitiastuti, S.Kom</option>
+              <option value="edy">Edy Susanto, S.P</option>
+              <option value="nursamsiah">Nursamsiah, S.Si, M.Si</option>
+              <option value="eko">Eko Taufiq Suharmanto, S.T</option>
+              <option value="rudi">Rudi Setyo Prihatin, S.P</option>
+              <option value="taufan">Taufan Hermawan, S.T</option>
+              <option value="rosyidah">Rosyidah, S.Kom, M.Si</option>
+              <option value="umaroh">Umaroh, S.Si, M.Si</option>
+              <option value="ikhsan">Ikhsan Yuliono, S.Kom</option>
+              <option value="abdul">Abdul Latif, S.Kom</option>
+              <option value="sri">Sri Endah Ardhi Ningrum Abdullah, S.Si</option>
+              <option value="indri">Indri Budiarto, S.T</option>
+              <option value="rini">Rini Eksawati, S.Si</option>
+              <option value="budi">Budi Haryanto, S.E</option>
+              <option value="teguh">R. Teguh Prayitno, S.Kom</option>
+              <option value="joko">Joko Cahyono</option>
+              <option value="muryanti">Muryanti</option>
+              <option value="stefani">Stefani Putri, S.Kom</option>
+              <option value="sidiq">Sidiq Prasetyo, S.IP</option>
+              <option value="afandi">Afandi</option>
+              <option value="restu">Restu Tresnawati, S.Si, M.Si</option>
+              <option value="ema">Ema Tri Catur Wulandari, S.E</option>
+              <option value="intan">Nurul Intan Alfiyanti, S.E, M.M</option>
+              <option value="achmad">Achmad Sulistyo, E.P</option>
+              <option value="tutik">Tutik Suptrihatin, S.E., M.Si</option>
+              <option value="noris">Noris Mestika, S.Si</option>
+              <option value="fitri">Rr. Fitri Damaryanti, S.Kom, M.Kom</option>
+              <option value="hana">Hana Amalina, S.Tr</option>
+              <option value="sandy">Sandy Al Mughozali, S.Tr</option>
+              <option value="suryati">Rini Suryati</option>
+              <option value="aris">Aris Herizaldi, A.Md</option>
+              <option value="jumari">Jumari</option>
+              <option value="bagus">Bagus Reza Pahlevi, S.Tr.Inst</option>
+              <option value="lainnya">Lainnya</option>
+            </select>
+          </div>
+          <div id="pegawaiManualInput${pegawaiCount}" class="manual-input">
+            <div class="form-group">
+              <label>Nama Pegawai:</label>
+              <input type="text" class="pegawai-nama" placeholder="Nama lengkap">
+            </div>
+            <div class="form-group">
+              <label>NIP:</label>
+              <input type="text" class="pegawai-nip" placeholder="Nomor Induk Pegawai">
+            </div>
+            <div class="form-group">
+              <label>Pangkat/Golongan:</label>
+              <select class="pegawai-pangkat">
+                <option value="">Pilih Pangkat/Golongan</option>
+                <optgroup label="Tidak ada pangkat">
+                  <option value="-">-</option>
+                </optgroup>
+                <optgroup label="Juru">
+                  <option value="Juru Muda / I a">Juru Muda / I a</option>
+                  <option value="Juru Muda Tk. I / I b">Juru Muda Tk. 1 / I b</option>
+                  <option value="Juru / I c">Juru / I c</option>
+                  <option value="Juru Tk. I / I d">Juru Tk. 1 / I d</option>
+                </optgroup>
+                <optgroup label="Pengatur">
+                  <option value="Pengatur Muda / II a">Pengatur Muda / II a</option>
+                  <option value="Pengatur Muda Tk. 1 / II b">Pengatur Muda Tk. 1 / II b</option>
+                  <option value="Pengatur / II c">Pengatur / II c</option>
+                  <option value="Pengatur Tk. I / II d">Pengatur Tk. 1 / II d</option>
+                </optgroup>
+                <optgroup label="Penata">
+                  <option value="Penata Muda / III a">Penata Muda / III a</option>
+                  <option value="Penata Muda Tk. I / III b">Penata Muda Tk. 1 / III b</option>
+                  <option value="Penata / III c">Penata / III c</option>
+                  <option value="Penata Tk. I / III d">Penata Tk. 1 / III d</option>
+                </optgroup>
+                <optgroup label="Pembina">
+                  <option value="Pembina / IV a">Pembina / IV a</option>
+                  <option value="Pembina Tk. I / IV b">Pembina Tk. 1 / IV b</option>
+                  <option value="Pembina Utama Muda / IV c">Pembina Utama Muda / IV c</option>
+                  <option value="Pembina Utama Madya / IV d">Pembina Utama Madya / IV d</option>
+                  <option value="Pembina Utama / IV e">Pembina Utama / IV e</option>
+                </optgroup>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Jabatan:</label>
+              <input type="text" class="pegawai-jabatan" placeholder="Jabatan pegawai">
+            </div>
+          </div>
+          <span class="remove-pegawai"><i class="fas fa-times"></i></span>
+        `;
+        pegawaiList.appendChild(newPegawai);
+      });
+      
+      // Generate initial preview
+      generateSurat();
+    });
+
+    function toggleManualInput() {
+  const penandatangan = document.getElementById('penandatangan').value;
+  const manualInput = document.getElementById('manualInput');
+  
+  if (penandatangan === 'lainnya') {
+    // Tampilkan form manual dengan data yang sudah terisi
+    manualInput.style.display = 'block';
+  } else {
+    // Sembunyikan form manual
+    manualInput.style.display = 'none';
+    
+    // Isi data ke form manual berdasarkan selection
+    const data = penandatanganData[penandatangan];
+    if (data) {
+      document.getElementById('manualNama').value = data.nama;
+      document.getElementById('manualNIP').value = data.nip;
+      document.getElementById('manualPangkat').value = data.pangkat;
+      document.getElementById('manualJabatan').value = data.jabatan;
+      document.getElementById('manualttd').value = data.ttd;
+      document.getElementById('ttd_pengirim').value = data.ttd_pengirim || data.ttd;
+    }
+  }
+}
+
+    function togglePegawaiManualInput(selectElement) {
+  const pegawaiValue = selectElement.value;
+  const pegawaiItem = selectElement.closest('.pegawai-item');
+  const manualInput = pegawaiItem.querySelector('.manual-input');
+  const namaInput = pegawaiItem.querySelector('.pegawai-nama');
+  const nipInput = pegawaiItem.querySelector('.pegawai-nip');
+  const pangkatSelect = pegawaiItem.querySelector('.pegawai-pangkat');
+  const jabatanInput = pegawaiItem.querySelector('.pegawai-jabatan');
+  
+  if (pegawaiValue === 'lainnya') {
+    manualInput.style.display = 'block';
+  } else {
+    manualInput.style.display = 'none';
+    
+    // Auto-fill data based on selection
+    const data = penandatanganData[pegawaiValue];
+    if (data) {
+      namaInput.value = data.nama;
+      nipInput.value = data.nip;
+      pangkatSelect.value = data.pangkat;
+      jabatanInput.value = data.jabatan;
+    } else {
+      // Clear fields for "Lainnya"
+      namaInput.value = '';
+      nipInput.value = '';
+      pangkatSelect.value = '';
+      jabatanInput.value = '';
+    }
+  }
+}
+
+    function toggleManualPangkatInput(type, element) {
+      let manualInput;
+      
+      if (type === 'manual') {
+        manualInput = document.getElementById('manualPangkatLainnya');
+      } else {
+        // For pegawai
+        const parentFormGroup = element.closest('.form-group');
+        manualInput = parentFormGroup.querySelector('.manual-pangkat-input');
+      }
+      
+      if (element.value === 'Lainnya') {
+        manualInput.style.display = 'block';
+      } else {
+        manualInput.style.display = 'none';
+      }
+    }
+
+   function generateSurat() {
+  const penandatangan = document.getElementById('penandatangan').value;
+  const nomorSurat = document.getElementById('nomorSurat').value;
+  const tanggalSurat = new Date(document.getElementById('tanggalSurat').value);
+  const tugas = document.getElementById('tugas').value || "Koordinasi Pelaksanaan PTB STMKG ke BKN Semarang";
+  const lamaTugas = document.getElementById('lamaTugas').value || "1 (satu) hari";
+  const tanggalBerangkat = new Date(document.getElementById('tanggalBerangkat').value);
+  const lokasi = document.getElementById('lokasi').value || "Kantor BKN Semarang, Kec. Bergas, Kabupaten Semarang";
+  const sumberDana = document.getElementById('sumberDana').value || "DIPA Stasiun Klimatologi Jawa Tengah TA.2025";
+  
+  // Format dates to Indonesian format
+  const options = { day: 'numeric', month: 'long', year: 'numeric' };
+  const formattedTanggalSurat = tanggalSurat.toLocaleDateString('id-ID', options);
+  const formattedTanggalBerangkat = tanggalBerangkat.toLocaleDateString('id-ID', options);
+  
+  // SELALU ambil data penandatangan dari form manual (yang sudah diisi otomatis atau diedit manual)
+  let penandatanganNama = document.getElementById('manualNama').value || "Nama Penandatangan";
+  let penandatanganNIP = document.getElementById('manualNIP').value || "NIP Penandatangan";
+  let penandatanganPangkat = document.getElementById('manualPangkat').value || "Pangkat/Golongan";
+  let penandatanganJabatan = document.getElementById('manualJabatan').value || "Jabatan Penandatangan";
+  let penandatanganNamasing = document.getElementById('manualttd').value || "Nama Penandatangan tanpa gelar";
+  let ttd_pengirim = document.getElementById('ttd_pengirim').value || "Tanda Tangan Elektronik";
+  
+  // ... (kode lainnya tetap sama)
+      // Get pegawai data and build the table for the preview
+      const pegawaiItems = document.querySelectorAll('.pegawai-item');
+      let pegawaiHTML = `
+        <table class="pegawai-tabel-lampiran">
+          <thead>
+        <tr>
+            <th colspan="5" style="font-color: black; text-align:left; font-size:12pt;border-bottom:none; margin-bottom: 0; padding-bottom: 0px; line-height: 1.2;">Lokasi <a style="margin-left:10px;">:</a> ${lokasi}</th>
+        </tr>
+        <tr>
+         <th colspan="5" style="font-color: black; text-align:left; font-size:12pt;border-top:none; margin-top: 0; padding-top: 0px; line-height: 1.2;">Tanggal <a style="margin-left:1.5px;">:</a> ${formattedTanggalBerangkat}</th>
+         </tr>   
+         <tr style="background-color: #fffff;">
+              <th style="width: 20px; text-align: center;">No</th>
+              <th>Nama</th>
+              <th>NIP</th>
+              <th>Pangkat/Gol</th>
+              <th>Jabatan</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+      
+      pegawaiItems.forEach((item, index) => {
+        const nama = item.querySelector('.pegawai-nama').value || 'Nama Pegawai';
+        const nip = item.querySelector('.pegawai-nip').value || 'NIP';
+        
+        // Handle pangkat with "Lainnya" option
+        const pangkatSelect = item.querySelector('.pegawai-pangkat');
+        let pangkat;
+        if (pangkatSelect.value === 'Lainnya') {
+          const manualInput = pangkatSelect.closest('.form-group').querySelector('.manual-pangkat-input');
+          pangkat = manualInput.value || 'Pangkat/Golongan';
+        } else {
+          pangkat = pangkatSelect.value || 'Pangkat/Golongan';
+        }
+        
+        const jabatan = item.querySelector('.pegawai-jabatan').value || 'Jabatan';
+         const alignPangkat = (pangkat === "-") ? 'style="text-align: center;"' : '';
+        pegawaiHTML += `
+          <tr>
+            <td style="text-align: center;">${index + 1}.</td>
+            <td>${nama}</td>
+            <td style="text-align: center;">${nip}</td>
+            <td ${alignPangkat}>${pangkat}</td>
+            <td>${jabatan}</td>
+          </tr>
+        `;
+      });
+      
+      pegawaiHTML += `</tbody></table>`;
+      
+      // Generate the surat content
+      const suratContent = `  
+        <div>
+          <table style="width:100%; border-collapse:collapse;">
+            <tr>
+              <!-- Logo -->
+              <td style="width:100px; text-align:center; vertical-align:middle;">
+                <img src="logo_bmkg.png" width="0">
+              </td>
+            </tr>
+          </table>
+        </div>
+      <div style="font-family:'Times New Roman',serif;font-size:12pt;line-height:1.2; padding-left:2.54cm; padding-right:2.54cm; ">
+      <!-- Judul -->
+      <div style="text-align:center;font-weight:bold;">
+        <div style="text-transform:uppercase;">SURAT TUGAS</div>
+        <div style="margin-top:0px;">NOMOR : ${nomorSurat}</div>
+      </div>
+      <br>
+      <!-- Pembuka -->
+      <p style="text-align:justify;text-indent:0cm;margin:0; margin-bottom: 7px">
+        Yang bertanda tangan di bawah ini :
+      </p>
+
+      <!-- Identitas Penandatangan -->
+      <table style="border-collapse:collapse;margin-bottom:5px;width:100%;margin-left:0cm; table-layout:fixed;">
+        <tr>
+          <td style="width:160px; vertical-align:top; white-space:nowrap;">Nama</td>
+          <td style="width:10px; vertical-align:top; text-align:center;">:</td>
+          <td style="vertical-align:top; word-wrap:break-word; overflow-wrap:break-word; white-space:normal; text-indent:0px;">${penandatanganNama}</td>
+        </tr>
+        <tr>
+          <td style="width:160px; vertical-align:top; white-space:nowrap;">NIP</td>
+          <td style="width:10px; vertical-align:top; text-align:center;">:</td>
+          <td style="vertical-align:top; word-wrap:break-word; overflow-wrap:break-word; white-space:normal; text-indent:0px;">${penandatanganNIP}</td>
+        </tr>
+        <tr>
+          <td style="width:160px; vertical-align:top; white-space:nowrap;">Pangkat/Golongan</td>
+          <td style="width:10px; vertical-align:top; text-align:center;">:</td>
+          <td style="vertical-align:top; word-wrap:break-word; overflow-wrap:break-word; white-space:normal; text-indent:0px;">${penandatanganPangkat}</td>
+        </tr>
+        <tr>
+          <td style="width:160px; vertical-align:top; white-space:nowrap;">Jabatan</td>
+          <td style="width:10px; vertical-align:top; text-align:center;">:</td>
+          <td style="vertical-align:top; word-wrap:break-word; overflow-wrap:break-word; white-space:normal; text-indent:0px;">${penandatanganJabatan}</td>
+        </tr>
+        <tr>
+          <td style="width:160px; vertical-align:top; white-space:nowrap;">Unit Organisasi</td>
+          <td style="width:10px; vertical-align:top; text-align:center;">:</td>
+          <td style="vertical-align:top; word-wrap:break-word; overflow-wrap:break-word; white-space:normal; text-indent:0px;">Stasiun Klimatologi Jawa Tengah</td>
+        </tr>
+      </table>
+        
+       <p style="text-align:justify;text-indent:0cm;margin:0; margin-top: 20px">
+            Dengan ini memberikan tugas kepada : 
+          </p>
+          <p style="text-align:justify;text-indent:0cm;margin:0; margin-top: 10px">
+            (Daftar Terlampir)
+          </p>
+
+        <p style="text-align:justify;text-indent:0cm;margin:0; margin-top: 20px;margin-bottom: 7px;">
+          Untuk melaksanakan :
+        </p>
+
+        <table style="border-collapse:collapse;margin-bottom:10px;width:100%;margin-left:0cm; line-height:1.2; table-layout:fixed;">
+        <tr>
+          <td style="width:160px; vertical-align:top; white-space:nowrap;">Tugas</td>
+          <td style="width:10px; vertical-align:top; text-align:center;">:</td>
+          <td style="vertical-align:top; word-wrap:break-word; overflow-wrap:break-word; white-space:normal;">${tugas}</td>
+        </tr>
+        <tr>
+          <td style="width:160px; vertical-align:top; white-space:nowrap;">Selama</td>
+          <td style="width:10px; vertical-align:top; text-align:center;">:</td>
+          <td style="vertical-align:top; word-wrap:break-word; overflow-wrap:break-word; white-space:normal;">${lamaTugas}</td>
+        </tr>
+        <tr>
+          <td style="width:160px; vertical-align:top; white-space:nowrap;">Lokasi</td>
+          <td style="width:10px; vertical-align:top; text-align:center;">:</td>
+          <td style="vertical-align:top; word-wrap:break-word; overflow-wrap:break-word; white-space:normal;">${lokasi}</td>
+        </tr>
+        <tr>
+          <td style="width:160px; vertical-align:top; white-space:nowrap;">Tanggal Berangkat</td>
+          <td style="width:10px; vertical-align:top; text-align:center;">:</td>
+          <td style="vertical-align:top; word-wrap:break-word; overflow-wrap:break-word; white-space:normal;">${formattedTanggalBerangkat}</td>
+        </tr>
+        <tr>
+          <td style="width:160px; vertical-align:top; white-space:nowrap;">Sumber Dana</td>
+          <td style="width:10px; vertical-align:top; text-align:center;">:</td>
+          <td style="vertical-align:top; word-wrap:break-word; overflow-wrap:break-word; white-space:normal;">${sumberDana}</td>
+        </tr>
+      </table>
+
+        <!-- Penutup -->
+        <p style="text-align:justify;text-indent:0px;margin:0; margin-top: 20px;">
+          Demikian, untuk dilaksanakan sebagaimana mestinya.
+        </p>
+
+        <!-- Tanda tangan -->
+        <div style="margin-top:25px;margin-right:0cm; margin-left:45%; width:210px;">
+          <p style="
+        word-wrap: break-word;
+        overflow-wrap: break-word;
+        white-space: normal;">Semarang, ${formattedTanggalSurat}<br>${penandatanganJabatan},</p>
+        </div><div style="margin-top:62px; margin-left:50%;">
+          <div>${ttd_pengirim}</div>
+        </div>
+        <div style="margin-top:62px; margin-left:45%;">
+          <div>${penandatanganNamasing}</div>
+        </div>
+        </div> </div>
+        <!-- Lampiran di halaman baru -->
+        <div class="page-break">
+          <div style="margin-left:40%; margin-bottom:3px;">Lampiran I</div>
+          <div style="margin-bottom:10px;margin-left:40%; line-height:1.2;">
+            Nomor <a style="margin-left:20px">:</a> ${nomorSurat}<br>
+            Tanggal <a style="margin-left:13.5px">:</a> ${formattedTanggalSurat}
+          </div>
+          
+          <p style="text-align:center;text-indent:0cm;margin:0; margin-bottom: 15px; margin-top: 15px;">
+              DAFTAR NAMA PEJABAT DAN PEGAWAI YANG DIBERI TUGAS  
+          </p>
+      
+          <div style="font-family:'Times New Roman',serif;font-size:12pt;line-height:1.2; padding-left:1.5cm; padding-right:1cm; ">
+          ${pegawaiHTML}
+          </div>
+       
+    `;
+      
+      // Update the preview
+      document.getElementById('suratPreview').innerHTML = suratContent;
+    }
+
+    function printSurat() {
+      const preview = document.getElementById("suratPreview").innerHTML;
+      
+      // Tentukan ukuran jendela baru
+      const newWidth = 1000;
+      const newHeight = 700;
+
+      // Hitung posisi tengah layar
+      const screenLeft = window.screenLeft || window.screenX;
+      const screenTop = window.screenTop || window.screenY;
+      const screenWidth = window.innerWidth || document.documentElement.clientWidth || screen.width;
+      const screenHeight = window.innerHeight || document.documentElement.clientHeight || screen.height;
+
+      // Posisi X (Horizontal)
+      const left = ((screenWidth / 2) - (newWidth / 2)) + screenLeft;
+      // Posisi Y (Vertikal)
+      const top = ((screenHeight / 2) - (newHeight / 2)) + screenTop;
+
+      // Buat string fitur untuk window.open
+      const features = `height=${newHeight},width=${newWidth},left=${left},top=${top}`;
+
+      // Buka jendela baru
+      const w = window.open('', 'PopUpJendelaBaru', features);
+      
+      w.document.write(`
+        <html>
+          <head>
+            <title>Surat Tugas</title>
+            <style>
+              @page { 
+                margin-top: 0;
+                margin-bottom: 2.54cm;
+                margin-left: 0cm;
+                margin-right: 0cm;
+              }
+              @media print {
+                .page-break {
+                  page-break-before: always;
+                  margin-top: 100px;
+                  padding-top: 50px;
+                }
+              }
+              body { 
+                font-family:'Times New Roman', serif; 
+                font-size:12pt; 
+                line-height:1.2; 
+                -webkit-print-color-adjust: exact !important; 
+                print-color-adjust: exact !important;
+                margin: 0;
+                padding: 0;
+              } 
+              p { text-indent:0px; margin:0 0 0px 0; } 
+              table { border-collapse:collapse; width:71%; margin-bottom:10px; } 
+              td { padding:0.5px 0px; vertical-align:top; }
+              .lampiran-title {
+                text-align: center;
+                font-weight: bold;
+                margin-bottom: 20px;
+                text-decoration: underline;
+              }
+
+              /* Print-specific style for the table */
+              .pegawai-tabel-lampiran {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 10px;
+                margin-bottom: 20px;
+              }
+              .pegawai-tabel-lampiran th,
+              .pegawai-tabel-lampiran td {
+                border: 1px solid #000;
+                padding: 7px;
+                vertical-align: top;
+                text-align: left;
+              }
+              .pegawai-tabel-lampiran th {
+                background-color: #fffff;
+                text-align: center;
+              }
+              .pegawai-tabel-lampiran tr:nth-child(even) {
+                background-color: #fffff;
+              }
+            </style>
+          </head>
+          <body>
+            <div style="background-color:rgb(150,150,150); 
+                padding:18px; 
+                color:black; 
+                margin-bottom:0; 
+                position:relative;
+                border-bottom:0.3px solid black;">
+
+                <!-- Logo -->
+                <img src="logo_bmkg.png" width="65" 
+                    style="position:absolute; left:50px; top:40%; transform:translateY(-40%); margin-left:15px;">
+
+                <!-- Teks Header -->
+                <div style="text-align:center;margin-left:60px; line-height:1.2;font-family:'Calibri';">
+              <div style="font-size:17.5pt;letter-spacing:0.5; font-weight:bold;">BADAN METEOROLOGI, KLIMATOLOGI, DAN GEOFISIKA</div>
+              <div style="font-size:17pt;letter-spacing:0.5; font-weight:bold;">STASIUN KLIMATOLOGI JAWA TENGAH</div>
+              <div style="font-size:12pt;">Jl. Siliwangi No. 291 Semarang 50145 Telp. 024-7609016 Fax. 024-7612394</div>
+              <div style="font-size:12pt;">
+                  Email: <a style="color:rgb(0, 120, 255); text-decoration:underline;">staklim.jateng@bmkg.go.id</a>&nbsp&nbsp
+                  <a style="color:rgb(0, 120, 255); text-decoration:underline;">https://www.iklimjateng.info</a>
+                </div>
+                </div>
+              </div>
+
+            <!-- Garis bawah tebal -->
+            <hr style="border:2px solid black; margin:1.2px 0 15px 0;">
+
+            
+            <div style="margin-left:0.5cm; margin-right:0.5cm;">
+            ${preview}</div>
+          </body>
+        </html>
+      `);
+      w.document.close();
+      w.print();
+    }
+  </script>
+</body>
+</html>
